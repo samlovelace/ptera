@@ -1,0 +1,4 @@
+std_msgs/String object_type
+geometry_msgs/PoseStamped obj_pose_g
+
+sensor_msgs/PointCloud2 obj_points_g
