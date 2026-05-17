@@ -1,0 +1,30 @@
+# ptera_bringup/config/robots/abv/system.yaml
+
+robot:
+  name: "abv"
+  type: "mobile_manipulator"
+
+modules:
+  vehicle:
+    enabled: true
+    bringup_pkg: "abv_bringup"
+    launch_file: "gnc.launch.py"
+    workspace_path: ""
+
+  # manipulation:
+  #   enabled: false # not in loop yet
+
+  # perception:
+  #   enabled: true
+  #   bringup_pkg: "iris_bringup"
+  #   launch_file: "iris.launch.py"
+
+  # autonomy:
+  #   enabled: true
+  #   bringup_pkg: "ptera_commander"
+  #   launch_file: "commander.launch.py"
+
+  simulation:
+    enabled: true
+    bringup_pkg: "ptera_sim"
+    launch_file: "sim.launch.py"

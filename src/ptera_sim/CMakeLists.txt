@@ -8,9 +8,14 @@ include(plugins/posePublisher/CMakeLists.txt)
 #include(plugins/vehicleController/CMakeLists.txt)
 include(plugins/vehicleVisualizer/CMakeLists.txt)
 
-#include(sim/CMakeLists.txt)
+# install  files 
+install(DIRECTORY 
+    launch 
+    models
+    worlds 
+    config
+    DESTINATION 
+    share/${PROJECT_NAME}
+)
 
-# install common files 
-#install(DIRECTORY launch models urdf worlds DESTINATION share/${PROJECT_NAME})
-#install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
 ament_package()

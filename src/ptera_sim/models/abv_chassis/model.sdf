@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<sdf version="1.8">
+  <model name="abv_chassis">
+
+    <!-- Base link with mesh + inertia -->
+    <link name="base_link">
+      <pose>0 0 0 0 0 0</pose>
+
+      <collision name="collision">
+        <geometry>
+          <mesh>
+            <uri>model://abv_chassis/meshes/abv_v1.stl</uri>
+          </mesh>
+        </geometry>
+      </collision>
+
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://abv_chassis/meshes/abv_v2.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+
+      <inertial>
+        <mass>1</mass>
+        <inertia>
+          <ixx>1</ixx><iyy>1</iyy><izz>1</izz>
+          <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+        </inertia>
+      </inertial>
+    </link>
+
+    <!-- Vehicle frame -->
+    <link name="vehicle_frame">
+      <pose relative_to="base_link">0.01 0.065 0.2 0 0 0</pose>
+
+      <inertial>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>0.1</ixx><iyy>0.1</iyy><izz>0.1</izz>
+          <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+        </inertia>
+      </inertial>
+    </link>
+
+    <joint name="vehicle_frame_to_base" type="fixed">
+      <parent>base_link</parent>
+      <child>vehicle_frame</child>
+    </joint>
+
+  </model>
+</sdf>

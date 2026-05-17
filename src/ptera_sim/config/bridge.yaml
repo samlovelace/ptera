@@ -1,0 +1,11 @@
+- ros_topic_name: /stereo/left/image_raw
+  gz_topic_name: /world/base_world/model/abv/model/camera/link/camera_link/sensor/left_camera/image
+  ros_type_name: sensor_msgs/msg/Image
+  gz_type_name: ignition.msgs.Image
+  direction: GZ_TO_ROS
+
+- ros_topic_name: /stereo/right/image_raw
+  gz_topic_name: /world/base_world/model/abv/model/camera/link/camera_link/sensor/right_camera/image
+  ros_type_name: sensor_msgs/msg/Image
+  gz_type_name: ignition.msgs.Image
+  direction: GZ_TO_ROS
