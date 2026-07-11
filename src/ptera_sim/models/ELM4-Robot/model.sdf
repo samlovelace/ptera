@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <model name="ELM4-Robot">
+    <static>false</static>
+    <self_collide>true</self_collide>
+
+    <!-- Mobile base -->
+    <include>
+      <uri>model://ELM4-Chassis</uri>
+      <name>mobile</name>
+      <pose>0 0 0 0 0 0</pose>
+    </include>
+
+    <!-- Arm -->
+    <include>
+      <uri>model://ur5_rg2</uri>
+      <name>arm</name>
+      <pose>-0.25 0 0.175 0 0 0</pose>
+      <plugin
+                filename="libjoint_position_controller.so"
+                name="JointPositionController"
+            >
+        <publish>UR/joint_positions</publish>
+        <command>UR/joint_commands</command>
+        <initial_position>0 0 -1.57 0 0 0 0 0</initial_position>
+      </plugin>
+    </include>
+
+    <include>
+      <uri>model://stereo_camera</uri>
+      <name>camera</name>
+      <pose>0.25 0.0 0.3 0 0 0</pose>
+    </include>
+
+    <!-- Optional helper frame at the mount location on the mobile base -->
+    <frame name="arm_mount" attached_to="mobile::ELM4-Chassis/Base">
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
+
+    <!-- Fixed joint (weld) between the base link and the arm’s base link -->
+    <joint name="weld_arm_to_base" type="fixed">
+      <parent>mobile::ELM4-Chassis/Base</parent>
+      <child>arm::base_link</child>
+    </joint>
+
+    <joint name="camera_mount" type="fixed">
+      <parent>mobile::ELM4-Chassis/Base</parent>
+      <child>camera::camera_link</child>
+    </joint>
+
+  </model>
+</sdf>
