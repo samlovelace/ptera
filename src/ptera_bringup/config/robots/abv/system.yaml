@@ -14,10 +14,10 @@ modules:
   # manipulation:
   #   enabled: false # not in loop yet
 
-  # perception:
-  #   enabled: true
-  #   bringup_pkg: "iris_bringup"
-  #   launch_file: "iris.launch.py"
+  perception:
+    enabled: true
+    bringup_pkg: "iris_bringup"
+    launch_file: "base.launch.py"
 
   # autonomy:
   #   enabled: true
