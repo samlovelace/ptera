@@ -7,6 +7,7 @@ include(plugins/jointPositionController/CMakeLists.txt)
 include(plugins/posePublisher/CMakeLists.txt)
 #include(plugins/vehicleController/CMakeLists.txt)
 include(plugins/vehicleVisualizer/CMakeLists.txt)
+include(plugins/wrenchApplicator/CMakeLists.txt)
 
 # install  files 
 install(DIRECTORY 

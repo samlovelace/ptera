@@ -20,8 +20,8 @@
                 filename="libjoint_position_controller.so"
                 name="JointPositionController"
             >
-        <publish>UR/joint_positions</publish>
-        <command>UR/joint_commands</command>
+        <publish>gazebo/joint_positions</publish>
+        <command>gazebo/joint_commands</command>
         <initial_position>0 0 -1.57 0 0 0 0 0</initial_position>
       </plugin>
     </include>

@@ -80,7 +80,10 @@
           </geometry>
           <surface>
             <friction>
-              <ode/>
+              <ode>
+                <mu>0</mu>
+                <mu2>0</mu2>
+              </ode>
             </friction>
             <bounce/>
             <contact/>
@@ -123,10 +126,18 @@
       <pose> 1 2.5 0.25 0 0 1.20 </pose>
     </include>
 
-    <include>
+    <include>`
       <uri>model://abv</uri>
       <pose>-1 -1 0.5 0 0 0 </pose>
-      <plugin filename="libvehicle_visualizer.so" name="VehicleVisualizer"/>
+      <plugin filename="libwrench_applicator.so" name="WrenchApplicator">
+        <topic>gazebo/wrench_cmd</topic>
+        <frame>body</frame>
+      </plugin>
+      <plugin filename="libpose_publisher.so" name="PosePublisher">
+        <topic_name>/gazebo/robot/state</topic_name>
+        <link_name>base_link</link_name>
+        <rate>50</rate>
+      </plugin>
     </include>
 
     <light name='sun' type='directional'>

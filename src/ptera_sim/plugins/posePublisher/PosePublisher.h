@@ -1,5 +1,6 @@
 #include <ignition/gazebo/System.hh>
 #include <ignition/gazebo/Model.hh>
+#include <ignition/gazebo/Link.hh>
 #include <ignition/gazebo/components/Joint.hh>
 #include <ignition/gazebo/components/JointPosition.hh>
 #include <ignition/gazebo/components/Pose.hh>
@@ -47,13 +48,17 @@ private:
 	bool mRunning; 
 
 	void robotStatePublishLoop();
-	void convertToIdl(const ignition::gazebo::components::Pose* aPose, ptera_msgs::msg::RobotState& anIdlPose);
+	void convertToIdl(const ignition::gazebo::components::Pose* aPose,
+					   const ignition::gazebo::EntityComponentManager &ecm,
+					   ptera_msgs::msg::RobotState& anIdlPose);
 
 	void setLatestState(ptera_msgs::msg::RobotState aState) {std::lock_guard<std::mutex> lock(mStateMutex); mLatestState = aState;}
 	ptera_msgs::msg::RobotState getLatestState() {std::lock_guard<std::mutex> lock(mStateMutex); return mLatestState; }
 
-	std::mutex mStateMutex; 
-	ptera_msgs::msg::RobotState mLatestState; 
+	std::mutex mStateMutex;
+	ptera_msgs::msg::RobotState mLatestState;
+
+	ignition::gazebo::Link mLink{ignition::gazebo::kNullEntity};
 
 };
 

@@ -12,6 +12,14 @@
             <uri>model://abv_chassis/meshes/abv_v1.stl</uri>
           </mesh>
         </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0</mu>
+              <mu2>0</mu2>
+            </ode>
+          </friction>
+        </surface>
       </collision>
 
       <visual name="visual">
@@ -23,9 +31,9 @@
       </visual>
 
       <inertial>
-        <mass>1</mass>
+        <mass>12.7</mass>
         <inertia>
-          <ixx>1</ixx><iyy>1</iyy><izz>1</izz>
+          <ixx>0.3</ixx><iyy>0.3</iyy><izz>0.3</izz>
           <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
         </inertia>
       </inertial>

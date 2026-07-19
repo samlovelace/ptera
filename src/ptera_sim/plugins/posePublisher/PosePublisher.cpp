@@ -2,9 +2,11 @@
 #include "PosePublisher.h"
 #include <ignition/common/Console.hh>
 #include <ignition/math/Quaternion.hh>
-#include <thread> 
-#include <chrono> 
-#include <vector> 
+#include <ignition/gazebo/components/Link.hh>
+#include "LinkResolver.h"
+#include <thread>
+#include <chrono>
+#include <vector>
 
 
 void PosePublisher::Configure(const ignition::gazebo::Entity &entity,
@@ -23,13 +25,30 @@ void PosePublisher::Configure(const ignition::gazebo::Entity &entity,
 	std::string publishTopicName = "/robot/state";
 	if(anSdf->HasElement("topic_name"))
 	{
-		publishTopicName = anSdf->Get<std::string>("topic_name"); 
+		publishTopicName = anSdf->Get<std::string>("topic_name");
 	}
 
-	int rate = 10; 
+	int rate = 10;
 	if(anSdf->HasElement("rate"))
 	{
-		rate = anSdf->Get<int>("rate"); 
+		rate = anSdf->Get<int>("rate");
+	}
+
+	std::string linkName = "base_link";
+	if(anSdf->HasElement("link_name"))
+	{
+		linkName = anSdf->Get<std::string>("link_name");
+	}
+
+	ignition::gazebo::Entity linkEntity = resolveLinkEntity(mModel.Entity(), ecm, linkName);
+	if(linkEntity != ignition::gazebo::kNullEntity)
+	{
+		mLink = ignition::gazebo::Link(linkEntity);
+		mLink.EnableVelocityChecks(ecm, true);
+	}
+	else
+	{
+		std::cerr << "[PosePublisher] link '" << linkName << "' not found; velocity will not be published" << std::endl;
 	}
 
   	auto ctx = rclcpp::contexts::get_global_default_context(); 
@@ -62,14 +81,16 @@ void PosePublisher::PostUpdate(const ignition::gazebo::UpdateInfo&, const igniti
 
     if(pose)
     {
-		ptera_msgs::msg::RobotState idlPose; 
-		convertToIdl(pose, idlPose); 
-		setLatestState(idlPose); 
+		ptera_msgs::msg::RobotState idlPose;
+		convertToIdl(pose, ecm, idlPose);
+		setLatestState(idlPose);
     }
 
 }
 
-void PosePublisher::convertToIdl(const ignition::gazebo::components::Pose* aPose, ptera_msgs::msg::RobotState& anIdlPose)
+void PosePublisher::convertToIdl(const ignition::gazebo::components::Pose* aPose,
+                                  const ignition::gazebo::EntityComponentManager &ecm,
+                                  ptera_msgs::msg::RobotState& anIdlPose)
 {
 	ptera_msgs::msg::Vec3 pos; 
 	pos.set__x(aPose->Data().X());
@@ -89,16 +110,38 @@ void PosePublisher::convertToIdl(const ignition::gazebo::components::Pose* aPose
 	q.set__y(quat.Y()); 
 	q.set__z(quat.Z()); 
 
-	// TODO: compute velocities and populate into message 
+	ptera_msgs::msg::Vec3 vel;
+	ptera_msgs::msg::Vec3 angVel;
 
-	auto now = mRosNode->now(); 
-	builtin_interfaces::msg::Time nowTime; 
-	nowTime.set__nanosec(now.nanoseconds()); 
-	nowTime.set__sec(now.seconds()); 
+	if(mLink.Valid(ecm))
+	{
+		auto linVel = mLink.WorldLinearVelocity(ecm);
+		if(linVel.has_value())
+		{
+			vel.set__x(linVel->X());
+			vel.set__y(linVel->Y());
+			vel.set__z(linVel->Z());
+		}
 
-	anIdlPose.set__position(pos); 
-	anIdlPose.set__euler(eul); 
-	anIdlPose.set__quat(q); 
+		auto angularVel = mLink.WorldAngularVelocity(ecm);
+		if(angularVel.has_value())
+		{
+			angVel.set__x(angularVel->X());
+			angVel.set__y(angularVel->Y());
+			angVel.set__z(angularVel->Z());
+		}
+	}
+
+	auto now = mRosNode->now();
+	builtin_interfaces::msg::Time nowTime;
+	nowTime.set__nanosec(now.nanoseconds());
+	nowTime.set__sec(now.seconds());
+
+	anIdlPose.set__position(pos);
+	anIdlPose.set__euler(eul);
+	anIdlPose.set__quat(q);
+	anIdlPose.set__velocity(vel);
+	anIdlPose.set__angular_velocity(angVel);
 	anIdlPose.set__timestamp(now);
 }
 
